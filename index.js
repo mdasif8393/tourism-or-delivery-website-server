@@ -60,6 +60,37 @@ async function run() {
             res.send(result);
         })
         
+        //delete a order
+        app.delete('/orders/:id', async (req, res) => {
+          const id = req.params.id;
+          const query = {_id: ObjectId(id)};
+          const result = await ordersCollection.deleteOne(query);
+          res.send(result);
+
+        })
+
+        //get all orders
+        app.get('/orders', async (req, res) => {
+          const cursor = ordersCollection.find({});
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        //update a user order status
+        app.put('/orders/:id', async (req, res) => {
+          const id = req.params.id;
+          const user = req.body;
+          console.log(id, user)
+          const query = {_id: ObjectId(id)};
+          const options = { upsert: true };
+          const updateDoc = {
+            $set: {
+             status: user.status
+            },
+          };
+          const result = await ordersCollection.updateOne(query, updateDoc, options);
+          res.send(result);
+        })
 
     } 
     
